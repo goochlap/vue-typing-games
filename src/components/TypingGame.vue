@@ -5,26 +5,30 @@
   <div class="container text-center">
     <div class="row">
       <div class="col-md-6 mx-auto">
-        <h2 class="display-2 mb-5" id="current-word"></h2>
+        <h2 class="display-2 mb-5">
+          <span v-for="(item, index) in word" :key="index" :class="item.active ? 'valid-letter' : ''">
+            {{ item.letter }}
+          </span>
+        </h2>
         <input
           type="text"
           class="form-control form-control-lg"
           placeholder="Start typing..."
-          id="word-input"
           autofocus
+          v-model="input"
         />
         <div class="progress">
           <div class="progress-bar" role="progressbar"></div>
         </div>
         <h4 class="mt-3" id="message"></h4>
         <br />
-        <button class="btn btn-lg btn-block">START</button>
+        <button :disabled="isActive" @click="start()" class="btn btn-lg btn-block">START</button>
 
         <div class="row mt-3">
           <div class="col-md-6">
             <h3>
               Time Left:
-              <span id="time"></span>
+              <span id="time">{{ time }}</span>
             </h3>
           </div>
           <div class="col-md-6">
@@ -63,8 +67,58 @@
 </template>
 
 <script>
+import { WORDS_LIST } from '../utils/wordList'
+
 export default {
-  name: 'TypingGame'
+  name: 'TypingGame',
+  data() {
+    return {
+      isActive: false,
+      time: 30,
+      word: [],
+      letterRemaining: [],
+      input: ''
+    }
+  },
+  methods: {
+    start() {
+      this.isActive = true
+      this.countDown()
+      this.initWord()
+    },
+    countDown() {
+      const timer = setInterval(() => {
+        this.time--
+        if (this.time === 0) {
+          clearInterval(timer)
+          this.time = 30
+        }
+      }, 1000)
+    },
+    initWord() {
+      const active = false
+      const word = WORDS_LIST[Math.floor(Math.random() * WORDS_LIST.length)].toUpperCase()
+
+      this.letterRemaining = word.split('')
+
+      this.word = word.split('').map(letter => {
+        return { letter, active }
+      })
+    }
+  },
+  watch: {
+    input(value) {
+      const currentWord = value.toUpperCase().split('')
+
+      const lastLetter = currentWord[currentWord.length - 1]
+
+      const letterToFind = this.word.find(letter => !letter.active)
+
+      if (letterToFind.letter === lastLetter) {
+        this.word = [...this.word, (letterToFind.active = true)]
+      }
+    }
+  }
 }
 </script>
 
