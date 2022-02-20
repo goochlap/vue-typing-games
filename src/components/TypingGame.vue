@@ -6,7 +6,11 @@
     <div class="row">
       <div class="col-md-6 mx-auto">
         <h2 class="display-2 mb-5">
-          <span v-for="(item, index) in word" :key="index" :class="item.active ? 'valid-letter' : ''">
+          <span
+            v-for="(item, index) in word"
+            :key="index"
+            :class="[item.active ? 'valid-letter' : '', hidden ? 'hidden' : '']"
+          >
             {{ item.letter }}
           </span>
         </h2>
@@ -76,8 +80,9 @@ export default {
       isActive: false,
       time: 30,
       word: [],
-      letterRemaining: [],
-      input: ''
+      input: '',
+      checker: 0,
+      hidden: false
     }
   },
   methods: {
@@ -97,9 +102,8 @@ export default {
     },
     initWord() {
       const active = false
-      const word = WORDS_LIST[Math.floor(Math.random() * WORDS_LIST.length)].toUpperCase()
 
-      this.letterRemaining = word.split('')
+      const word = WORDS_LIST[Math.floor(Math.random() * WORDS_LIST.length)].toUpperCase()
 
       this.word = word.split('').map(letter => {
         return { letter, active }
@@ -116,6 +120,18 @@ export default {
 
       if (letterToFind.letter === lastLetter) {
         this.word = [...this.word, (letterToFind.active = true)]
+        this.checker++
+      }
+
+      if (this.checker === 5) {
+        this.hidden = true
+
+        setTimeout(() => {
+          this.hidden = false
+          this.input = ''
+          this.checker = 0
+          this.initWord()
+        }, 500)
       }
     }
   }

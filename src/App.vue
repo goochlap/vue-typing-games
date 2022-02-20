@@ -14,13 +14,8 @@ export default {
 </script>
 
 <style>
-html,
-body {
-  min-height: 100vh;
-}
-
 #app {
-  height: 100vh;
+  min-height: 100vh;
   background: linear-gradient(#7f53ac, #647dee);
 }
 </style>
