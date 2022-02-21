@@ -38,7 +38,7 @@
           <div class="col-md-6">
             <h3>
               Score:
-              <span id="score">0</span>
+              <span id="score"> {{ score }} </span>
             </h3>
           </div>
           <div class="col mt-3 d-flex justify-content-evenly">
@@ -78,11 +78,13 @@ export default {
   data() {
     return {
       isActive: false,
-      time: 30,
+      hidden: false,
+      gameOver: false,
+      time: 10,
       word: [],
       input: '',
       checker: 0,
-      hidden: false
+      score: 0
     }
   },
   methods: {
@@ -96,7 +98,8 @@ export default {
         this.time--
         if (this.time === 0) {
           clearInterval(timer)
-          this.time = 30
+          this.time = 10
+          this.gameOver = true
         }
       }, 1000)
     },
@@ -127,6 +130,7 @@ export default {
         this.hidden = true
 
         setTimeout(() => {
+          this.score++
           this.hidden = false
           this.input = ''
           this.checker = 0
