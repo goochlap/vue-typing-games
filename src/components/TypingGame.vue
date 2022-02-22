@@ -45,7 +45,7 @@
           </div>
           <div class="col mt-3 d-flex justify-content-evenly">
             <h3>Difficulty:</h3>
-            <select v-model="selected" :disabled="isActive">
+            <select class="input-level" v-model="selected" :disabled="isActive">
               <option v-for="option in options" :value="option" :key="option">
                 {{ option.level }}
               </option>
@@ -54,7 +54,7 @@
           <div class="col mt-3">
             <h3>
               High Score:
-              <span id="highscore">0</span>
+              <span>{{ highScore }}</span>
             </h3>
           </div>
         </div>
@@ -87,6 +87,7 @@ export default {
       input: '',
       checker: 0,
       score: 0,
+      highScore: localStorage.highScore | 0,
       width: 0,
       selected: 'Easy',
       options: [
@@ -110,6 +111,10 @@ export default {
           this.time = this.selected.time
           this.gameOver = true
           this.isActive = false
+          if (this.score > this.highScore) {
+            localStorage.highScore = this.score
+            this.highScore = this.score
+          }
         }
       }, 1000)
     },
@@ -198,11 +203,11 @@ header {
 }
 
 .btn,
-#input-level {
+.input-level {
   background: #f4e623;
 }
 
-#input-level {
+.input-level {
   border-radius: 0.25rem;
 }
 
@@ -213,7 +218,6 @@ header {
 }
 
 .progress-bar {
-  /* width: 0%; */
   background-color: #e9f897;
   background-image: linear-gradient(to bottom, #e9f897, #f4e623);
 }
